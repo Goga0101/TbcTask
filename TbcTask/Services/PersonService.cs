@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TbcTask.Entities;
 using TbcTask.Interfaces;
 using TbcTask.Mapping;
 using TbcTask.Models;
@@ -11,6 +12,12 @@ namespace TbcTask.Services
     {
         private readonly TbcTaskContext _context;
         private readonly IMapper<Entities.Person, PersonModel> _personMapper;
+
+
+
+
+
+
 
         public PersonService(TbcTaskContext context)
         {
@@ -93,6 +100,19 @@ namespace TbcTask.Services
             return new DeletePersonResponse();
         }
 
+
+        public async Task<IEnumerable<Person>> Search(string name)
+        {
+            IQueryable<Person> query = _context.Persons;
+            {
+                if (!string.IsNullOrEmpty(name))
+                {
+                    query = query.Where(a => a.FirstName.Contains(name));
+                }
+
+                return await query.ToListAsync();
+            }
+        }
 
     }
 }
